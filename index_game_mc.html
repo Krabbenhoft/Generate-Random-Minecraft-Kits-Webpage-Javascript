@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Random Kit Generator</title>
+    </head>
+    <body>
+        <script>
+        
+            //nessesary stuffs
+            function constrain(value,min,max){
+                if(value>max){
+                    value=max;
+                }
+                if(value<min){
+                    value=min;
+                }
+                return(value);
+            }
+            var randomNum = function(min,max){
+                return(Math.floor(Math.random() * (max - min + 1))+min )
+            }
+            
+            function appendRandomElements(startArray, endArray, numCalls) {
+                var tempArray = startArray.slice();
+                for (var i = 0; i < numCalls; i++) {
+                var randomIndex = Math.floor(Math.random() * tempArray.length);
+                var element = tempArray.splice(randomIndex, 1)[0];
+                endArray.push({type:element});
+                }
+            }
+            
+            function cleanAppendRandomElements(startArray, endArray, numCalls) {
+                var tempArray = startArray.slice();
+                for (var i = 0; i < numCalls; i++) {
+                var randomIndex = Math.floor(Math.random() * tempArray.length);
+                var element = tempArray.splice(randomIndex, 1)[0];
+                endArray.push(element);
+                }
+            }
+
+            function findInArray(array, findMe){
+                for(var i=0;i<array.length;i++){
+                    if(findMe==array[i]){
+                        return i+1;
+                    }
+                }
+            }
+            function isInArray(array, findMe){
+                for(var i=0;i<array.length;i++){
+                    if(findMe==array[i]){
+                        return true;
+                    }
+                }
+                return false;
+            }
+            function findObjectInArray(array, property, findMe, returnValue){
+                for(var i=0;i<array.length;i++){
+                    if(findMe==array[i][property]){
+                        return array[i][returnValue];
+                    }
+            }
+                return(0);
+            }
+
+            function logHtml (plainText){
+                if(isObject(plainText)){
+                    document.body.appendChild(document.createTextNode(JSON.stringify(plainText)));
+                }
+                else{
+                document.body.appendChild(document.createTextNode(plainText));
+                }
+                document.body.innerHTML += '<br><br>';
+            }
+            function isObject(data) {
+                if(Array.isArray(data)){
+                    return false;
+                }else{
+                    return typeof data === 'object';
+                }
+            }
+            function generateSingleItem(id,countLow,countHigh){
+                var output=",{Slot:"+currentSlot+",id:"+id+",Count:"+randomNum(countLow,countHigh) +"}";
+                currentSlot++;
+                return output;
+            }
+            //objects
+            var sword=function(material, enchants){
+                this.material=material;
+                this.enchants=enchants;
+            }
+            var armour = function(make, magic){
+                this.make=make;
+                this.magic=magic;
+            }
+                
+            
+            //object instances
+            var testW = new sword ("", "");
+            var testA = new armour ("", "");
+            
+            //data stoarge
+            var possibleWeapons = ["end_crystal", "respawn_anchor", "tnt_minecart", "tnt", "creeper_spawn_egg", "anvil", "bucket_of_pufferfish", "lava_bucket", "blaze_spawn_egg", "snowball", "ravager_spawn_egg"];
+            
+            var materials = ["wooden_sword", "golden_sword", "stone_sword", "iron_sword", "diamond_sword", "netherite_sword"];
+            var books = ["unbreaking", "sharpness", "fire_aspect", "knockback", "mending", "smite"];
+            
+            var make = ["turtle", "leather", "gold", "iron", "diamond", "netherite"];
+            var magic = ["prot", "unbreaking", "mending", "fire_prot", "blast_prot", "proj_prot", ];
+            
+            var rodEnchants=["unbreaking", "mending"];
+            var ligherEnchants=["unbreaking", "mending"];
+            var tridentEnchants=["loyalty", "riptide", "unbreaking", "mending"];
+            var bowEnchants=["power", "flame", "unbreaking", "mending", "punch"];
+            var crossbowEnchants=["charge", "power", "flame", "unbreaking", "mending", "piercing", "multishot"];
+            
+            var badFood=["baked_potato", "mushroom_stew", "carrot", "chorus_fruit", "rotten_flesh", "poison_potato", "raw_chicken"];
+            var okFood=["steak", "cooked_salmon", "cooked_porkchop", "cooked_chicken", "golden_carrot"]
+            var goodFood=["enchanted_golden_apple", "golden_apple"];
+            
+
+
+
+
+            //sword stuff (enchanted in inverse proportion to material for balancing)
+            var swordIndex=randomNum(0,5);
+            testW.material=materials[swordIndex];
+            
+            var wBooks=[];
+            var numBooks = constrain((6-(swordIndex+randomNum(-1,1))),0,5);
+            appendRandomElements(books,wBooks,numBooks);
+            //for each that appends enchantment level
+            for (var i=0;i<wBooks.length;i++){
+                wBooks[i].power = randomNum(1,5);
+            }
+            testW.enchants=wBooks;            
+            
+
+
+
+
+
+            //generate extra items (includes safegaurds(ish))
+            var extraWeapons=[];
+            cleanAppendRandomElements(possibleWeapons, extraWeapons, randomNum(2,4));
+
+            //adjust sword index if nessesary
+            if(isInArray(extraWeapons, "tnt")||isInArray(extraWeapons, "crystals")||isInArray(extraWeapons, "anchors")||isInArray(extraWeapons, "tnt_minecart")){
+                swordIndex=randomNum(4,5);
+            }
+
+            
+
+
+
+            //generate another set of extra weapons
+            var rod ={name:"rod", enchants:[]};
+            var lighter ={name:"lighter", enchants:[]};
+            var trident={name:"trident", enchants:[]};
+            var bow={name:"bow", enchants:[]};
+            var crossbow={name:"crossbow", enchants:[]};
+            appendRandomElements(rodEnchants, rod.enchants, Math.ceil((rodEnchants.length)/2));
+            for (var i=0;i<rod.enchants.length;i++){
+                rod.enchants[i].power = randomNum(1,5);
+            }
+            appendRandomElements(ligherEnchants, lighter.enchants, Math.ceil((ligherEnchants.length)/2));
+            for (var i=0;i<lighter.enchants.length;i++){
+                lighter.enchants[i].power = randomNum(1,5);
+            }
+            appendRandomElements(tridentEnchants, trident.enchants, Math.ceil((tridentEnchants.length)/2));
+            for (var i=0;i<trident.enchants.length;i++){
+                trident.enchants[i].power = randomNum(1,5);
+            }
+            appendRandomElements(bowEnchants, bow.enchants, Math.ceil((bowEnchants.length)/2));
+            for (var i=0;i<bow.enchants.length;i++){
+                bow.enchants[i].power = randomNum(1,5);
+            }
+            appendRandomElements(crossbowEnchants, crossbow.enchants, Math.ceil((crossbowEnchants.length)/2));
+            for (var i=0;i<crossbow.enchants.length;i++){
+                crossbow.enchants[i].power = randomNum(1,5);
+            }
+
+            var extraEnchantedWeapons={weapons:[]};
+            if(randomNum(0,1)==1){
+                extraEnchantedWeapons.weapons.push(rod);
+            }
+            if(randomNum(0,1)==1){
+                extraEnchantedWeapons.weapons.push(lighter);
+            }
+            if(randomNum(0,1)==1){
+                extraEnchantedWeapons.weapons.push(trident);
+            }
+            if(randomNum(0,1)==1){
+                extraEnchantedWeapons.weapons.push(bow);
+            }
+            if(randomNum(0,1)==1){
+                extraEnchantedWeapons.weapons.push(crossbow);
+            }
+
+
+
+            
+            //stuff down here (armour/food) is influenced by stuff up top (various weapons)
+            //armour stuff (based on sword Index)
+            var armourIndex=(swordIndex + randomNum(-1,1));
+            armourIndex = constrain(armourIndex, 0, 5);
+            testA.make=make[armourIndex];
+            
+            var magicA = [];
+            var numMagic = constrain((6-(armourIndex+randomNum(-1,1))),0,5);
+            appendRandomElements(magic,magicA,numMagic);
+            for (var i=0;i<magicA.length;i++){
+                magicA[i].power = randomNum(1,5);
+            }
+            testA.magic=magicA;
+            
+
+
+
+
+            //generate food (based on sword index)
+            var food ="";
+            var foodIndex=(swordIndex + randomNum(-1,1));
+            foodIndex = constrain(foodIndex, 0, 5);
+
+            if(foodIndex<3){
+                food=badFood[randomNum(0,badFood.length-1)];
+            }else if(foodIndex<5){
+                food=okFood[randomNum(0,okFood.length-1)];
+            }else{
+                food=goodFood[randomNum(0,goodFood.length-1)];
+            }
+            
+            
+
+
+
+            //format stuctured data for /give command
+            var currentSlot=0;
+            //sword
+            var structuredSwordEnchants="";
+            for(i=0;i<testW.enchants.length;i++){
+                structuredSwordEnchants=structuredSwordEnchants+"{id:"+testW.enchants[i].type+",lvl:"+testW.enchants[i].power+"},";
+            }
+            structuredSwordEnchants=structuredSwordEnchants.slice(0,-1);
+            var structuredSword= "{Slot:"+currentSlot+",id:"+testW.material+",Count:1, tag: {Enchantments:["+structuredSwordEnchants+"]}}";
+            currentSlot++;
+            //food
+            var structuredFood=generateSingleItem(food,16,75);
+            //individual items (should change this to an array of objects eventually)
+            var structuredItems="";
+            for(i=0;i<extraWeapons.length;i++){
+                structuredItems=structuredItems+generateSingleItem(extraWeapons[i],46,64);
+            }
+            //armour
+            //other weapons
+
+
+            //print generated text
+            logHtml(testA);
+            logHtml(testW);
+            logHtml(extraWeapons);
+            logHtml(extraEnchantedWeapons);            
+            logHtml(food);          
+            logHtml("/give @a shulker_box{BlockEntityTag:{Items:["+structuredSword+structuredFood+structuredItems+"]}}")
+            //{Slot:0,id:dirt,Count:1}
+            tag:{Enchantments:[{id:sweeping,lvl:2},{id:unbreaking,lvl:2}]}
+
+        </script>
+
+    </body>
+</html>
