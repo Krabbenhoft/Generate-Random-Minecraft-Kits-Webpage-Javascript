@@ -100,8 +100,19 @@
             var testA = new armour ("", "");
             
             //data stoarge
-            var possibleWeapons = ["end_crystal", "respawn_anchor", "tnt_minecart", "tnt", "creeper_spawn_egg", "anvil", "bucket_of_pufferfish", "lava_bucket", "blaze_spawn_egg", "snowball", "ravager_spawn_egg"];
-            
+            var possibleWeapons = [
+  { name: "end_crystal", list: ["end_crystal", "obsidian"] },
+  { name: "respawn_anchor", list: ["respawn_anchor", "glowstone"] },
+  { name: "tnt_minecart", list: ["tnt_minecart", "rail"] },
+  { name: "tnt", list: ["tnt"] },
+  { name: "creeper_spawn_egg", list: ["creeper_spawn_egg"] },
+  { name: "anvil", list: ["anvil"] },
+  { name: "bucket_of_pufferfish", list: ["bucket_of_pufferfish"] },
+  { name: "lava_bucket", list: ["lava_bucket"] },
+  { name: "blaze_spawn_egg", list: ["blaze_spawn_egg"] },
+  { name: "snowball", list: ["snowball"] },
+  { name: "ravager_spawn_egg", list: ["ravager_spawn_egg"] }
+];
             var materials = ["wooden_sword", "golden_sword", "stone_sword", "iron_sword", "diamond_sword", "netherite_sword"];
             var books = ["unbreaking", "sharpness", "fire_aspect", "knockback", "mending", "smite"];
             
@@ -141,14 +152,20 @@
 
 
             //generate extra items (includes safegaurds(ish))
-            var extraWeapons=[];
-            cleanAppendRandomElements(possibleWeapons, extraWeapons, randomNum(2,4));
+            var extraWeapons={weapons:[]};
+            cleanAppendRandomElements(possibleWeapons, extraWeapons.weapons, randomNum(2,4));
 
             //adjust sword index if nessesary
-            if(isInArray(extraWeapons, "tnt")||isInArray(extraWeapons, "crystals")||isInArray(extraWeapons, "anchors")||isInArray(extraWeapons, "tnt_minecart")){
+
+            //rewrite this to use a function
+            for(i=0;i<extraWeapons.weapons.length;i++){
+                if(extraWeapons.weapons[i].name=="tnt"||extraWeapons.weapons[i].name=="end_crystal"||extraWeapons.weapons[i].name=="respawn_anchor"||extraWeapons.weapons[i].name=="tnt_minecart"){
                 swordIndex=randomNum(4,5);
+                logHtml("SAFETY OVERIDE ENGAGED!!")
             }
 
+            
+            }
             
 
 
@@ -249,8 +266,10 @@
             var structuredFood=generateSingleItem(food,16,75);
             //individual items (should change this to an array of objects eventually)
             var structuredItems="";
-            for(i=0;i<extraWeapons.length;i++){
-                structuredItems=structuredItems+generateSingleItem(extraWeapons[i],46,64);
+            for(i=0;i<extraWeapons.weapons.length;i++){
+                for(j=0;j<extraWeapons.weapons[i].list.length;j++){
+                    structuredItems=structuredItems+generateSingleItem(extraWeapons.weapons[i].list[j],46,64);
+                }
             }
             //armour
             //other weapons
@@ -264,7 +283,7 @@
             logHtml(food);          
             logHtml("/give @a shulker_box{BlockEntityTag:{Items:["+structuredSword+structuredFood+structuredItems+"]}}")
             //{Slot:0,id:dirt,Count:1}
-            tag:{Enchantments:[{id:sweeping,lvl:2},{id:unbreaking,lvl:2}]}
+            //tag:{Enchantments:[{id:sweeping,lvl:2},{id:unbreaking,lvl:2}]}
 
         </script>
 
