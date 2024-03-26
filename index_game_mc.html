@@ -101,8 +101,10 @@
                     structuredEnchants=structuredEnchants+"{id:"+object.enchants[i].type+",lvl:"+object.enchants[i].power+"},";
                 }
                 structuredEnchants=structuredEnchants.slice(0,-1);
+                
+                var theOutput= ",{Slot:"+currentSlot+",id:"+object.material+",Count:1, tag: {Enchantments:["+structuredEnchants+"]}}";
                 currentSlot++;
-                return ",{Slot:"+currentSlot+",id:"+object.material+",Count:1, tag: {Enchantments:["+structuredEnchants+"]}}";
+                return theOutput;
 
             }
             //objects
@@ -124,10 +126,10 @@
             var possibleWeapons = [
   { name: "end_crystal", list: ["end_crystal", "obsidian"] },
   { name: "respawn_anchor", list: ["respawn_anchor", "glowstone"] },
-  { name: "tnt_minecart", list: ["tnt_minecart", "rail"] },
+  { name: "tnt_minecart", list: ["tnt_minecart", "rail", "bow", "anvil"] },
   { name: "tnt", list: ["tnt"] },
   { name: "creeper_spawn_egg", list: ["creeper_spawn_egg"] },
-  { name: "anvil", list: ["anvil"] },
+  { name: "anvil", list: ["anvil", "scaffolding"] },
   { name: "bucket_of_pufferfish", list: ["bucket_of_pufferfish"] },
   { name: "lava_bucket", list: ["lava_bucket"] },
   { name: "blaze_spawn_egg", list: ["blaze_spawn_egg"] },
@@ -225,9 +227,12 @@
             }
             if(randomNum(0,1)==1){
                 extraEnchantedWeapons.weapons.push(bow);
+                var arrows = generateSingleItem("arrow", 60,64)
             }
             if(randomNum(0,1)==1){
                 extraEnchantedWeapons.weapons.push(crossbow);
+                var arrows = generateSingleItem("firework_rocket", 60,64)
+
             }
 
 
@@ -251,17 +256,12 @@
             var leggings = JSON.parse(JSON.stringify(testA));
             var boots = JSON.parse(JSON.stringify(testA));
             logHtml(testA.material);
-            if(testA.material=="leather"){
-                helmet.material+= "_cap";
-                chestplate.material+="_tunic";
-                leggings.material+="_pants";
-                boots.material+="_boots"
-            }else{
-                helmet.material+= "_helmet";
-                chestplate.material+="_chestplate";
-                leggings.material+="_leggings";
-                boots.material+="_boots"
-            }
+
+            helmet.material+= "_helmet";
+            chestplate.material+="_chestplate";
+            console.log(chestplate.material);
+            leggings.material+="_leggings";
+            boots.material+="_boots"
 
 
 
@@ -303,9 +303,9 @@
             //armour
 
             var helmetE =enchantTheItem(helmet);
-            var chestplateE =enchantTheItem(helmet);
-            var leggingsE =enchantTheItem(helmet);
-            var bootsE =enchantTheItem(helmet);
+            var chestplateE =enchantTheItem(chestplate);
+            var leggingsE =enchantTheItem(leggings);
+            var bootsE =enchantTheItem(boots);
 
             //other weapons
             var enchantedItems="";
@@ -321,7 +321,7 @@
             // logHtml(extraWeapons);
             // logHtml(extraEnchantedWeapons);            
             // logHtml(food);
-            var alsmostOutput=structuredSword+structuredFood+structuredItems+enchantedItems+helmetE+chestplateE+leggingsE+bootsE;
+            var alsmostOutput=structuredSword+structuredFood+structuredItems+enchantedItems+helmetE+chestplateE+leggingsE+bootsE+arrows;
             finalOutput=alsmostOutput.slice(1);
             logHtml("/give @a shulker_box{BlockEntityTag:{Items:["+finalOutput+"]}}");
         </script>
